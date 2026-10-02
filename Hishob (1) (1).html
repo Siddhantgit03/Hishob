@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hishob</title>
+<meta name="apple-mobile-web-app-title" content="Hishob">
+<meta name="application-name" content="Hishob">
+<meta name="theme-color" content="#0f4c81">
+<style>
+:root{--bg:#f3f6f9;--card:#fff;--ink:#12263a;--mute:#5b6b7a;--line:#e1e8ef;--brand:#0f4c81;--brand2:#1b6aa8;--ok:#1e8e5a;--warn:#b97a06;--bad:#c0392b;--soft:#eaf1f7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1822;--card:#16232f;--ink:#e6eef5;--mute:#93a5b5;--line:#243443;--brand:#2f7fc1;--brand2:#245f94;--ok:#3cc183;--warn:#e0a53a;--bad:#ef7060;--soft:#1c2d3b}}
+:root[data-theme="dark"]{--bg:#0e1822;--card:#16232f;--ink:#e6eef5;--mute:#93a5b5;--line:#243443;--brand:#2f7fc1;--brand2:#245f94;--ok:#3cc183;--warn:#e0a53a;--bad:#ef7060;--soft:#1c2d3b}
+*{box-sizing:border-box}
+body{margin:0 auto;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:560px;padding:14px;font-variant-numeric:tabular-nums}
+.hero{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:18px;padding:18px;margin-bottom:12px}
+.hero small{opacity:.85;font-size:14px}.hero b{display:block;font-size:34px;letter-spacing:-.5px;margin:2px 0 12px}
+.bar{height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden;margin:4px 0 10px}
+.bar i{display:block;height:100%;border-radius:8px}
+.lab{display:flex;justify-content:space-between;font-size:13px}
+.row3{display:flex;gap:8px;margin-bottom:14px}
+.row3>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;font-size:13px;color:var(--mute)}
+.row3 b{display:block;font-size:17px;color:var(--ink)}
+.tabs{display:flex;background:var(--soft);border-radius:14px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border:0;background:none;color:var(--mute);border-radius:11px;font:inherit;font-weight:600}
+.tabs button.on{background:var(--card);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-top:10px}
+input{width:100%;padding:12px;margin-top:4px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus{outline:2px solid var(--brand);border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chips button{padding:7px 12px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:20px;font:inherit;font-size:14px}
+.pick{position:relative}
+.dd{position:absolute;z-index:5;left:0;right:0;top:100%;max-height:220px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.18);margin-top:4px}
+.dd button{display:block;width:100%;text-align:left;padding:11px 12px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit}
+.ir{display:flex;gap:8px;margin-top:8px}.ir input{margin:0}.ir .n{flex:2}.ir .a{flex:1;text-align:right}.ir button{border:0;background:none;color:var(--mute);font-size:22px;padding:0 4px}.tot2{display:flex;justify-content:space-between;font-weight:700;font-size:18px;margin-top:14px;padding-top:10px;border-top:2px solid var(--line)}.add{background:none;border:1.5px dashed var(--brand);color:var(--brand);border-radius:12px;padding:10px;width:100%;margin-top:10px;font:inherit;font-weight:600}.li{display:flex;justify-content:space-between;font-size:14px;color:var(--mute)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;width:44px;height:44px;font-size:22px}.nav button:disabled{opacity:.3}
+select{width:100%;padding:12px;margin-top:4px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit}
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}.mod{background:var(--card);border-radius:16px;padding:18px;width:100%;max-width:380px}.mb{display:flex;gap:8px}.toast{position:fixed;left:16px;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px;border-radius:12px;text-align:center;z-index:60}
+.btn{width:100%;padding:13px;border:0;border-radius:12px;background:var(--brand);color:#fff;font:inherit;font-weight:600;margin-top:14px}
+.btn.alt{background:none;color:var(--brand);border:1.5px solid var(--brand);margin-top:8px}
+.e{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}.e:last-child{border:0}
+.t{display:flex;justify-content:space-between;font-size:16px;font-weight:600}
+.e small{color:var(--mute);display:block}
+.x{background:none;border:0;color:var(--mute);float:right;font-size:12px;margin-left:8px}
+.empty{color:var(--mute);text-align:center;padding:14px}
+.out{color:var(--bad)}.in{color:var(--ok)}
+.sb{height:8px;border-radius:8px;background:var(--soft);margin-top:5px}.sb i{display:block;height:100%;border-radius:8px;background:var(--brand)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+var KEY="expense_notes_v1",s,tab="cash";
+var PL=["Aldi Nord","Aldi Süd","Lidl","Rewe","Rewe To Go","Edeka","Edeka Center","Marktkauf","Kaufland","Penny","Netto Marken-Discount","Netto (Stavenhagen)","Norma","Tegut","Globus","Famila","Combi","Jibi","Hit","Nahkauf","V-Markt","Wasgau","Real (Sb-Warenhaus)","dm","Rossmann","Müller","Budni","Alnatura","denn's Biomarkt","Basic Bio","Bio Company","Action","Tedi","Mix Markt","Asia / Turkish shop","Bakery","Kiosk / Späti","Restaurant / Café","Online","Other"];
+var AREAS=["Rent","Grocery","Food","Toiletries","Transport","Other"];
+function load(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return{w0:0,b0:0,c0:0,cash:[],card:[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+s=load();
+function today(){return iso(new Date())}
+function eur(n){return(n<0?"-":"")+"€"+Math.abs(n).toFixed(2)}
+function esc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function val(id){return document.getElementById(id).value}
+function num(id){return parseFloat(String(val(id)).replace(",","."))}
+function cashRows(){var w=+s.w0,b=+s.b0;return s.cash.map(function(e){if(e.t=="move"){w+=e.amt;b-=e.amt}else w-=e.amt;return Object.assign({},e,{w:w,b:b})})}
+function cardRows(){var c=+s.c0;return s.card.map(function(e){c-=e.amt;return Object.assign({},e,{c:c})})}
+function shops(){var m=[],seen={};s.cash.concat(s.card).slice().reverse().forEach(function(e){if(e.p&&e.p!="-"&&!seen[e.p]){seen[e.p]=1;m.push(e.p)}});PL.forEach(function(x){if(!seen[x]){seen[x]=1;m.push(x)}});return m}
+var rows={cash:[{n:"",a:""}],card:[{n:"",a:""}]};
+function rowTotal(k){return rows[k].reduce(function(t,x){return t+(parseFloat(String(x.a).replace(",","."))||0)},0)}
+function itemsInner(k){return'<label>What you bought (item and price)</label>'+rows[k].map(function(x,i){return'<div class="ir"><input class="n" placeholder="Item" value="'+esc(x.n)+'" oninput="iu(\''+k+'\','+i+',\'n\',this.value)"><input class="a" inputmode="decimal" placeholder="0.00" value="'+esc(x.a)+'" oninput="iu(\''+k+'\','+i+',\'a\',this.value)" onkeydown="if(event.key==\'Enter\')addRow(\''+k+'\')"><button type="button" onclick="delRow(\''+k+'\','+i+')">&times;</button></div>'}).join("")+'<button type="button" class="add" onclick="addRow(\''+k+'\')">+ Add another item</button><div class="tot2"><span>Total</span><span id="tt_'+k+'">'+eur(rowTotal(k))+'</span></div>'}
+function itemsBox(k){return'<div id="ib_'+k+'">'+itemsInner(k)+'</div>'}
+function iu(k,i,f,v){rows[k][i][f]=v;document.getElementById("tt_"+k).textContent=eur(rowTotal(k))}
+function addRow(k){rows[k].push({n:"",a:""});document.getElementById("ib_"+k).innerHTML=itemsInner(k);var n=document.querySelectorAll("#ib_"+k+" .ir .n");n[n.length-1].focus()}
+function delRow(k,i){rows[k].splice(i,1);if(!rows[k].length)rows[k]=[{n:"",a:""}];document.getElementById("ib_"+k).innerHTML=itemsInner(k)}
+function takeItems(k){return rows[k].map(function(x){return{n:x.n.trim(),a:parseFloat(String(x.a).replace(",","."))||0}}).filter(function(x){return x.a>0||x.n})}
+function itemList(e){if(e.items&&e.items.length)return e.items.map(function(x){return'<div class="li"><span>'+esc(x.n||"item")+'</span><span>'+eur(x.a)+'</span></div>'}).join("");return e.i&&e.i!="-"?'<div class="li"><span>'+esc(e.i)+'</span></div>':""}
+var per="month",off=0;
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function span(o){var n=new Date(),a,b,l,f=function(d,x){return d.toLocaleDateString("en-GB",x)};
+ if(per=="week"){a=new Date(n.getFullYear(),n.getMonth(),n.getDate()-((n.getDay()+6)%7)-7*o);b=new Date(a.getFullYear(),a.getMonth(),a.getDate()+6);l=f(a,{day:"numeric",month:"short"})+" - "+f(b,{day:"numeric",month:"short",year:"numeric"})}
+ else{a=new Date(n.getFullYear(),n.getMonth()-o,1);b=new Date(a.getFullYear(),a.getMonth()+1,0);l=f(a,{month:"long",year:"numeric"})}
+ return{from:iso(a),to:iso(b),label:l}}
+function spends(f,t){var r=[];
+ s.cash.forEach(function(e){if(e.t=="spend"&&e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:e.p||"-",items:e.items,i:e.i,amt:e.amt,src:"Cash"})});
+ s.card.forEach(function(e){if(e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:e.p||"-",items:e.items,i:e.i,amt:e.amt,src:"Card"})});
+ return r.sort(function(x,y){return x.d<y.d?-1:1})}
+function sumTotal(r){return r.reduce(function(t,e){return t+e.amt},0)}
+function group(r,k){var m={};r.forEach(function(e){var x=k(e);m[x]=(m[x]||0)+e.amt});return Object.keys(m).map(function(x){return[x,m[x]]}).sort(function(a,b){return b[1]-a[1]})}
+function itemGroup(r){var m={},nm={};r.forEach(function(e){(e.items||[]).forEach(function(x){var n=(x.n||"").trim();if(!n)return;var k=n.toLowerCase();nm[k]=nm[k]||n;m[k]=(m[k]||0)+x.a})});return Object.keys(m).map(function(k){return[nm[k],m[k]]}).sort(function(a,b){return b[1]-a[1]})}
+function setPer(p){per=p;off=0;draw()}
+function setOff(d){off=Math.max(0,off+d);draw()}
+function listBars(g,tot,n){return g.slice(0,n).map(function(x){return'<div class="e"><div class="t"><span>'+esc(x[0])+'</span><span>'+eur(x[1])+'</span></div><div class="sb"><i style="width:'+(tot>0?x[1]/tot*100:0)+'%"></i></div></div>'}).join("")}
+var q="",exCat="All";
+function setEx(v){exCat=v}
+function inEx(e){return exCat=="All"||(e.a||"").toLowerCase()==exCat.toLowerCase()}
+function itemRes(){var k=q.trim().toLowerCase();if(!k)return'';var sp=span(off),r=spends(sp.from,sp.to),hits=[];
+ r.forEach(function(e){(e.items||[]).forEach(function(x){if((x.n||"").toLowerCase().indexOf(k)>-1)hits.push({d:e.d,p:e.p,n:x.n,a:x.a})})});
+ if(!hits.length)return'<div class="empty">No "'+esc(q.trim())+'" bought in this period.</div>';
+ var tt=hits.reduce(function(t,x){return t+x.a},0);
+ return'<div class="t" style="margin-top:10px"><span>'+esc(q.trim())+' ('+hits.length+'x)</span><span>'+eur(tt)+'</span></div>'+hits.map(function(x){return'<div class="li"><span>'+esc(x.d)+' | '+esc(x.p)+' | '+esc(x.n)+'</span><span>'+eur(x.a)+'</span></div>'}).join("")}
+function setQ(v){q=v;document.getElementById("qres").innerHTML=itemRes()}
+function sumHtml(){
+ var sp=span(off),r=spends(sp.from,sp.to),tot=sumTotal(r),pv=span(off+1),pt=sumTotal(spends(pv.from,pv.to)),pn=per=="week"?"week":"month";
+ var h='<div class="tabs"><button class="'+(per=="week"?"on":"")+'" onclick="setPer(\'week\')">Weekly</button><button class="'+(per=="month"?"on":"")+'" onclick="setPer(\'month\')">Monthly</button></div>'+
+ '<div class="nav"><button onclick="setOff(1)">&lsaquo;</button><b>'+esc(sp.label)+'</b><button onclick="setOff(-1)" '+(off==0?"disabled":"")+'>&rsaquo;</button></div>'+
+ '<div class="box"><label style="margin-top:0">Search an item</label><input id="sq" placeholder="e.g. curd, milk, shampoo" value="'+esc(q)+'" oninput="setQ(this.value)"><div id="qres">'+itemRes()+'</div></div>';
+ if(!r.length)return h+'<div class="box"><div class="empty">Nothing spent in this '+pn+'.</div></div>';
+ var cmp="";if(pt>0){var pc=Math.round((tot-pt)/pt*100);cmp='<small class="'+(pc>0?"out":"in")+'">'+Math.abs(pc)+'% '+(pc>0?"more":"less")+' than previous '+pn+' ('+eur(pt)+')</small>'}
+ var cg=group(r,function(e){return e.a});
+ h+='<div class="box"><div class="t"><span>Total spent</span><span>'+eur(tot)+'</span></div>'+cmp+
+ '<div class="li" style="margin-top:6px"><span>Cash '+eur(sumTotal(r.filter(function(e){return e.src=="Cash"})))+'</span><span>Card '+eur(sumTotal(r.filter(function(e){return e.src=="Card"})))+'</span></div></div>'+
+ '<div class="box"><div class="t"><span>Where your money goes</span></div><small style="color:var(--mute)">Most spent on: '+esc(cg[0][0])+' ('+Math.round(cg[0][1]/tot*100)+'%)</small>'+listBars(cg,tot,12)+'</div>'+
+ '<div class="box"><div class="t"><span>Top shops</span></div>'+listBars(group(r,function(e){return e.p}).filter(function(x){return x[0]!="-"}),tot,5)+'</div>';
+ var ig=itemGroup(r);if(ig.length)h+='<div class="box"><div class="t"><span>Top items</span></div>'+listBars(ig,ig[0][1],8)+'</div>';
+ if(exCat!="All"&&!cg.some(function(g){return g[0].toLowerCase()==exCat.toLowerCase()}))exCat="All";
+ return h+'<div class="box"><label style="margin-top:0">Save as PDF: which spending?</label><select id="ex" onchange="setEx(this.value)"><option value="All">All categories</option>'+cg.map(function(g){return'<option value="'+esc(g[0])+'"'+(g[0].toLowerCase()==exCat.toLowerCase()?" selected":"")+'>'+esc(g[0])+' only</option>'}).join("")+'</select><button class="btn" onclick="exportPdf()">Save '+pn+' PDF</button></div>'}
+function exportPdf(){
+ var J=window.jspdf&&window.jspdf.jsPDF;if(!J){toast("The PDF tool did not load. Check your internet connection and try again.");return}
+ var sp=span(off),r=spends(sp.from,sp.to).filter(inEx),tot=sumTotal(r),doc=new J(),y=18;
+ function m(n){return n.toFixed(2)+" EUR"}
+ function ln(t,sz,b){if(y>282){doc.addPage();y=18}doc.setFont("helvetica",b?"bold":"normal");doc.setFontSize(sz);doc.text(String(t),15,y);y+=sz*0.45+3}
+ function two(a,b,bd){if(y>282){doc.addPage();y=18}doc.setFont("helvetica",bd?"bold":"normal");doc.setFontSize(10);doc.text(String(a).slice(0,75),15,y);doc.text(b,195,y,{align:"right"});y+=6}
+ ln("Hishob - "+(exCat=="All"?"spending report":exCat+" report"),18,1);ln(sp.label+" ("+(per=="week"?"weekly":"monthly")+")",11);y+=3;
+ if(!r.length)ln("No spending recorded in this period.",11);
+ else{
+  two("Total spent",m(tot),1);two("Cash",m(sumTotal(r.filter(function(e){return e.src=="Cash"}))));two("Card",m(sumTotal(r.filter(function(e){return e.src=="Card"}))));y+=4;
+  ln("By category",13,1);group(r,function(e){return e.a}).forEach(function(g){two(g[0]+" ("+Math.round(g[1]/tot*100)+"%)",m(g[1]))});y+=4;
+  ln("Top shops",13,1);group(r,function(e){return e.p}).slice(0,8).forEach(function(g){two(g[0],m(g[1]))});y+=4;
+  var ig=itemGroup(r);if(ig.length){ln("Top items",13,1);ig.slice(0,15).forEach(function(g){two(g[0],m(g[1]))});y+=4}
+  ln("All entries",13,1);
+  r.forEach(function(e){two(e.d+"  "+e.a+" - "+e.p+" ("+e.src+")",m(e.amt),1);(e.items||[]).forEach(function(x){two("     "+(x.n||"item"),m(x.a))})})}
+ var fn="hishob-"+(exCat=="All"?"":exCat.replace(/[^a-zA-Z0-9]/g,"")+"-")+sp.from+(per=="week"?"-week":"-month")+".pdf";
+ if(!(window.claude&&claude.use)){toast("Saving files is not available in this view.");return}
+ claude.use("downloads").then(function(dl){if(!dl){toast("Saving files is not available in this view.");return}return dl.save({filename:fn,data:doc.output("blob")})}).catch(function(e){if(!e||e.code!="declined")toast("Could not save the PDF.")})}
+var cb=null;
+function dlg(h){closeDlg();var o=document.createElement("div");o.id="ov";o.className="ov";o.innerHTML='<div class="mod">'+h+'</div>';document.body.appendChild(o)}
+function closeDlg(){var o=document.getElementById("ov");if(o)o.remove()}
+function toast(m){var x=document.createElement("div");x.className="toast";x.textContent=m;document.body.appendChild(x);setTimeout(function(){x.remove()},3500)}
+function conf(m,fn){cb=fn;dlg('<p>'+esc(m)+'</p><div class="mb"><button class="btn alt" onclick="closeDlg()">Cancel</button><button class="btn" onclick="closeDlg();cb()">OK</button></div>')}
+function ask(title,fields,fn){cb=fn;dlg('<b>'+esc(title)+'</b>'+fields.map(function(f,i){return'<label>'+esc(f[0])+'</label><input id="af'+i+'" type="text" inputmode="decimal" value="'+esc(f[1])+'">'}).join("")+'<div class="mb"><button class="btn alt" onclick="closeDlg()">Cancel</button><button class="btn" onclick="doAsk('+fields.length+')">Save</button></div>')}
+function doAsk(n){var v=[];for(var i=0;i<n;i++)v.push(document.getElementById("af"+i).value);closeDlg();cb(v)}
+var cur={};
+function pick(id){return'<label>Where spent</label><div class="pick"><input id="'+id+'" autocomplete="off" placeholder="Search or choose a shop" oninput="filt(\''+id+'\')" onfocus="filt(\''+id+'\')"><div class="dd" id="dd_'+id+'" hidden></div></div>'}
+function filt(id){var q=val(id).toLowerCase(),box=document.getElementById("dd_"+id);var l=shops().filter(function(x){return x.toLowerCase().indexOf(q)>-1});cur[id]=l;
+ box.innerHTML=l.length?l.map(function(x,i){return'<button type="button" onclick="sel(\''+id+'\','+i+')">'+esc(x)+'</button>'}).join(""):'<button type="button" onclick="document.getElementById(\'dd_'+id+'\').hidden=true">Use "'+esc(val(id))+'"</button>';box.hidden=false}
+function sel(id,i){document.getElementById(id).value=cur[id][i];document.getElementById("dd_"+id).hidden=true}
+document.addEventListener("click",function(e){if(!e.target.closest(".pick"))document.querySelectorAll(".dd").forEach(function(d){d.hidden=true})});
+function chips(id){return'<div class="chips">'+AREAS.map(function(a){return'<button type="button" onclick="document.getElementById(\''+id+'\').value=\''+a+'\'">'+a+'</button>'}).join("")+'</div>'}
+function addCash(){var it=takeItems("cash"),a=rowTotal("cash");if(!(a>0)){toast("Add at least one item with its price.");return}
+ var r=cashRows(),w=r.length?r[r.length-1].w:+s.w0;
+ var go=function(){s.cash.push({id:Date.now(),t:"spend",d:val("cd"),a:val("car")||"Other",p:val("cp")||"-",i:it.map(function(x){return x.n}).filter(Boolean).join(", ")||"-",items:it,amt:a});rows.cash=[{n:"",a:""}];save();draw()};if(a>w){conf("Your wallet has "+eur(w)+". Save anyway? Tip: move money from the bag first.",go);return}go()}
+function moveCash(){ask("Move money from bag to wallet",[["Amount (€)",""]],function(v){var a=parseFloat(String(v[0]).replace(",","."));if(!(a>0)){toast("Enter an amount.");return}s.cash.push({id:Date.now(),t:"move",d:today(),amt:a});save();draw()})}
+function addCard(){var it=takeItems("card"),a=rowTotal("card");if(!(a>0)){toast("Add at least one item with its price.");return}
+ s.card.push({id:Date.now(),d:val("kd"),a:val("kar")||"Other",p:val("kp")||"-",i:it.map(function(x){return x.n}).filter(Boolean).join(", ")||"-",items:it,amt:a});rows.card=[{n:"",a:""}];save();draw()}
+function del(k,id){conf("Delete this entry?",function(){s[k]=s[k].filter(function(e){return e.id!=id});save();draw()})}
+function setStart(){ask("Starting amounts",[["Cash in wallet (€)",s.w0],["Cash in bag (€)",s.b0],["Amount on card (€)",s.c0]],function(v){var f=function(x){return parseFloat(String(x).replace(",","."))||0};s.w0=f(v[0]);s.b0=f(v[1]);s.c0=f(v[2]);save();draw()})}
+function setTab(t){tab=t;draw()}
+function col(p){return p<0.15?"var(--bad)":p<0.4?"#ffc65c":"#7be0b0"}
+function bar(name,left,start){var p=start>0?Math.max(0,Math.min(1,left/start)):0;return'<div class="lab"><span>'+name+'</span><span>'+eur(left)+' left</span></div><div class="bar"><i style="width:'+(p*100)+'%;background:'+col(left<0?-1:p)+'"></i></div>'}
+function draw(){
+ var cr=cashRows(),kr=cardRows();
+ var w=cr.length?cr[cr.length-1].w:+s.w0,b=cr.length?cr[cr.length-1].b:+s.b0,c=kr.length?kr[kr.length-1].c:+s.c0;
+ var h='<div class="hero"><small>Money left in total</small><b>'+eur(w+b+c)+'</b>'+bar("Cash",w+b,+s.w0+ +s.b0)+bar("Card",c,+s.c0)+'</div>'+
+ '<div class="row3"><div>Wallet<b class="'+(w<0?"out":"")+'">'+eur(w)+'</b></div><div>Bag<b class="'+(b<0?"out":"")+'">'+eur(b)+'</b></div><div>Card<b class="'+(c<0?"out":"")+'">'+eur(c)+'</b></div></div>'+
+ '<div class="tabs"><button class="'+(tab=="cash"?"on":"")+'" onclick="setTab(\'cash\')">Cash</button><button class="'+(tab=="card"?"on":"")+'" onclick="setTab(\'card\')">Card</button><button class="'+(tab=="sum"?"on":"")+'" onclick="setTab(\'sum\')">Summary</button></div>';
+ if(tab=="cash"){
+  h+='<div class="box"><label>Date</label><input id="cd" type="date" value="'+today()+'"><label>Area of expense</label><input id="car" placeholder="Choose below or type">'+chips("car")+pick("cp")+itemsBox("cash")+'<button class="btn" onclick="addCash()">Save entry</button><button class="btn alt" onclick="moveCash()">Move money: bag to wallet</button></div>';
+  h+='<div class="box">'+(cr.length?cr.slice().reverse().map(function(e){return'<div class="e"><button class="x" onclick="del(\'cash\','+e.id+')">delete</button><div class="t"><span>'+(e.t=="move"?"Bag to wallet":esc(e.a))+'</span><span class="'+(e.t=="move"?"in":"out")+'">'+(e.t=="move"?"+":"-")+eur(e.amt)+'</span></div>'+(e.t=="move"?"":'<div>'+esc(e.p)+'</div>'+itemList(e))+'<small>'+esc(e.d)+' | Wallet '+eur(e.w)+' | Bag '+eur(e.b)+'</small></div>'}).join(""):'<div class="empty">No cash entries yet. Tap "Set starting amounts" below, then add your first entry.</div>')+'</div>';
+ }
+ if(tab=="card"){
+  h+='<div class="box"><label>Date</label><input id="kd" type="date" value="'+today()+'"><label>Area of expense</label><input id="kar" placeholder="Choose below or type">'+chips("kar")+pick("kp")+itemsBox("card")+'<button class="btn" onclick="addCard()">Save entry</button></div>';
+  h+='<div class="box">'+(kr.length?kr.slice().reverse().map(function(e){return'<div class="e"><button class="x" onclick="del(\'card\','+e.id+')">delete</button><div class="t"><span>'+esc(e.p)+'</span><span class="out">-'+eur(e.amt)+'</span></div>'+itemList(e)+'<small>'+esc(e.d)+' | Card '+eur(e.c)+'</small></div>'}).join(""):'<div class="empty">No card entries yet.</div>')+'</div>';
+ }
+ if(tab=="sum"){h+=sumHtml()}
+ h+='<button class="btn alt" onclick="setStart()">Set starting amounts (wallet, bag, card)</button>';
+ document.getElementById("app").innerHTML=h;
+}
+draw();
+</script>
+</body>
+</html>
