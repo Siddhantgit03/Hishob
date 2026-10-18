@@ -72,8 +72,8 @@ function val(id){return document.getElementById(id).value}
 function num(id){return parseFloat(String(val(id)).replace(",","."))}
 function cashRows(){var w=+s.w0,b=+s.b0;return s.cash.map(function(e){if(e.t=="move"){w+=e.amt;b-=e.amt}else if(e.t=="bagin"){b+=e.amt}else w-=e.amt;return Object.assign({},e,{w:w,b:b})})}
 function cardRows(){var c=+s.c0;return s.card.map(function(e){c+=(e.t=="in"?e.amt:-e.amt);return Object.assign({},e,{c:c})})}
-function shops(){var m=[],seen={};s.cash.concat(s.card).slice().reverse().forEach(function(e){if(e.p&&e.p!="-"&&!seen[e.p]){seen[e.p]=1;m.push(e.p)}});PL.forEach(function(x){if(!seen[x]){seen[x]=1;m.push(x)}});return m}
-var rows={cash:[{n:"",a:""}],card:[{n:"",a:""}]};
+function shops(){var m=[],seen={};s.cash.concat(s.card,s.exp.list).slice().reverse().forEach(function(e){if(e.p&&e.p!="-"&&!seen[e.p]){seen[e.p]=1;m.push(e.p)}});PL.forEach(function(x){if(!seen[x]){seen[x]=1;m.push(x)}});return m}
+var rows={cash:[{n:"",a:""}],card:[{n:"",a:""}],exp:[{n:"",a:""}]};
 function rowTotal(k){return rows[k].reduce(function(t,x){return t+(parseFloat(String(x.a).replace(",","."))||0)},0)}
 function itemsInner(k){return'<label>What you bought (item and price)</label>'+rows[k].map(function(x,i){return'<div class="ir"><input class="n" list="itl_'+k+'" placeholder="Item" value="'+esc(x.n)+'" oninput="iu(\''+k+'\','+i+',\'n\',this.value)"><input class="a" inputmode="decimal" placeholder="0.00" value="'+esc(x.a)+'" oninput="iu(\''+k+'\','+i+',\'a\',this.value)" onkeydown="if(event.key==\'Enter\')addRow(\''+k+'\')"><button type="button" onclick="delRow(\''+k+'\','+i+')">&times;</button></div>'}).join("")+'<button type="button" class="add" onclick="addRow(\''+k+'\')">+ Add another item</button><div class="tot2"><span>Total</span><span id="tt_'+k+'">'+eur(rowTotal(k))+'</span></div>'}
 function itemsBox(k){return'<datalist id="itl_'+k+'">'+itemNames().map(function(x){return'<option value="'+esc(x)+'">'}).join("")+'</datalist><div id="ib_'+k+'">'+itemsInner(k)+'</div>'}
@@ -91,7 +91,7 @@ function span(o){var n=new Date(),a,b,l,f=function(d,x){return d.toLocaleDateStr
 function spends(f,t){var r=[];
  s.cash.forEach(function(e){if(e.t=="spend"&&e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:e.p||"-",items:e.items,i:e.i,amt:e.amt,src:"Cash"})});
  s.card.forEach(function(e){if(e.t!="in"&&e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:e.p||"-",items:e.items,i:e.i,amt:e.amt,src:"Card"})});
- s.exp.list.forEach(function(e){if(e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:"Expatrio",items:[],i:e.n,amt:e.amt,src:"Expatrio"})});
+ s.exp.list.forEach(function(e){if(e.d>=f&&e.d<=t)r.push({d:e.d,a:e.a||"Other",p:(e.p&&e.p!="-"?e.p:"Expatrio"),items:e.items||[],i:e.n,amt:e.amt,src:"Expatrio"})});
  return r.sort(function(x,y){return x.d<y.d?-1:1})}
 function sumTotal(r){return r.reduce(function(t,e){return t+e.amt},0)}
 function group(r,k){var m={};r.forEach(function(e){var x=k(e);m[x]=(m[x]||0)+e.amt});return Object.keys(m).map(function(x){return[x,m[x]]}).sort(function(a,b){return b[1]-a[1]})}
@@ -142,26 +142,26 @@ function conf(m,fn){cb=fn;dlg('<p>'+esc(m)+'</p><div class="mb"><button class="b
 function ask(title,fields,fn){cb=fn;dlg('<b>'+esc(title)+'</b>'+fields.map(function(f,i){return'<label>'+esc(f[0])+'</label><input id="af'+i+'" type="text" inputmode="'+(f[2]||"decimal")+'" value="'+esc(f[1])+'">'}).join("")+'<div class="mb"><button class="btn alt" onclick="closeDlg()">Cancel</button><button class="btn" onclick="doAsk('+fields.length+')">Save</button></div>')}
 function doAsk(n){var v=[];for(var i=0;i<n;i++)v.push(document.getElementById("af"+i).value);closeDlg();cb(v)}
 function expRows(){var b=+s.exp.b0;return s.exp.list.map(function(e){b-=e.amt;return Object.assign({},e,{b:b})})}
-var XA=["TK Health Insurance","House Rent","Other"];
+var XA=["TK Health Insurance","House Rent","Grocery","Food","Toiletries","Transport","Other"];
 function xchips(id){return'<div class="chips">'+XA.map(function(a){return'<button type="button" onclick="document.getElementById(\''+id+'\').value=\''+a+'\'">'+a+'</button>'}).join("")+'</div>'}
-function addExp(){var a=parseFloat(String(val("xa")).replace(",","."));if(!(a>0)){toast("Enter the amount.");return}
- put("exp",{id:Date.now(),d:val("xd")||today(),a:val("xar")||"Other",n:val("xn"),amt:a});save();draw()}
+function addExp(){var it=takeItems("exp"),a=rowTotal("exp");if(!(a>0)){toast("Add at least one item with its price.");return}
+ put("exp",{id:Date.now(),d:val("xd")||today(),a:val("xar")||"Other",p:val("xp")||"-",n:it.map(function(x){return x.n}).filter(Boolean).join(", "),items:it,amt:a});rows.exp=[{n:"",a:""}];save();draw()}
 function setExp(){ask("Expatrio blocked account",[["Starting balance in Expatrio account (€)",s.exp.b0]],function(v){s.exp.b0=parseFloat(String(v[0]).replace(",","."))||0;save();draw()})}
 function rmId(id){var k=function(e){return e.id!=id};s.exp.list=s.exp.list.filter(k);s.card=s.card.filter(k);s.cash=s.cash.filter(k)}
 function expHtml(){var r=expRows();
- var h=recBox()+'<div class="box"><label style="margin-top:0">Date</label><input id="xd" type="date" value="'+today()+'"><label>Expense</label><input id="xar" placeholder="Choose below or type">'+xchips("xar")+'<label>Note (optional)</label><input id="xn" placeholder="e.g. October"><label>Amount (€)</label><input id="xa" type="text" inputmode="decimal" placeholder="0.00"><button class="btn" onclick="addExp()">'+sb("exp")+'</button></div>';
- h+='<div class="box">'+(r.length?r.slice().reverse().map(function(e){return'<div class="e"><button class="x" onclick="editE(\'exp\','+e.id+')">edit</button><button class="x" onclick="del(\'exp\','+e.id+')">delete</button><div class="t"><span>'+esc(e.a)+'</span><span class="out">-'+eur(e.amt)+'</span></div>'+(e.n?'<div class="li"><span>'+esc(e.n)+'</span></div>':"")+'<small>'+esc(e.d)+' | Expatrio left '+eur(e.b)+'</small></div>'}).join(""):'<div class="empty">No Expatrio expenses yet. Set your starting balance below, then add your first expense.</div>')+'</div>';
+ var h=recBox()+'<div class="box"><label style="margin-top:0">Date</label><input id="xd" type="date" value="'+today()+'"><label>Expense</label><input id="xar" placeholder="Choose below or type">'+xchips("xar")+pick("xp")+itemsBox("exp")+'<button class="btn" onclick="addExp()">'+sb("exp")+'</button></div>';
+ h+='<div class="box">'+(r.length?r.slice().reverse().map(function(e){return'<div class="e"><button class="x" onclick="editE(\'exp\','+e.id+')">edit</button><button class="x" onclick="del(\'exp\','+e.id+')">delete</button><div class="t"><span>'+esc(e.a)+'</span><span class="out">-'+eur(e.amt)+'</span></div>'+(e.p&&e.p!="-"?'<div>'+esc(e.p)+'</div>':"")+(e.items&&e.items.length?itemList(e):(e.n?'<div class="li"><span>'+esc(e.n)+'</span></div>':""))+'<small>'+esc(e.d)+' | Expatrio left '+eur(e.b)+'</small></div>'}).join(""):'<div class="empty">No Expatrio expenses yet. Set your starting balance below, then add your first expense.</div>')+'</div>';
  return h+'<button class="btn alt" onclick="setExp()">Set Expatrio starting balance</button>'}
 var ed=null,PAL=["#0f4c81","#1e8e5a","#c98a0b","#8e44ad","#c0392b","#16a0a8","#7f8c8d","#d35400"];
 function fix(){if(!s.exp)s.exp={b0:0,list:[]};if(!s.lim)s.lim={};if(!s.rec)s.rec=[]}
 function sb(k){return ed&&ed.k==k?"Update entry":"Save entry"}
 function put(k,o){var L=k=="exp"?s.exp.list:s[k];if(ed&&ed.k==k){var i=L.findIndex(function(x){return x.id==ed.id});if(i>-1){o.id=ed.id;L[i]=o;ed=null;return}}L.push(o)}
 function editE(k,id){var L=k=="exp"?s.exp.list:s[k],e=L.find(function(x){return x.id==id});if(!e)return;ed={k:k,id:id};tab=k;
- if(k!="exp")rows[k]=(e.items&&e.items.length?e.items:[{n:e.i&&e.i!="-"?e.i:"",a:e.amt}]).map(function(x){return{n:x.n,a:String(x.a)}});
+ rows[k]=(e.items&&e.items.length?e.items:[{n:e.i&&e.i!="-"?e.i:(e.n||""),a:e.amt}]).map(function(x){return{n:x.n,a:String(x.a)}});
  draw();var st=function(i,v){var el=document.getElementById(i);if(el)el.value=v||""},pl=e.p=="-"?"":e.p;
- if(k=="cash"){st("cd",e.d);st("car",e.a);st("cp",pl)}if(k=="card"){st("kd",e.d);st("kar",e.a);st("kp",pl)}if(k=="exp"){st("xd",e.d);st("xar",e.a);st("xn",e.n);st("xa",e.amt)}
+ if(k=="cash"){st("cd",e.d);st("car",e.a);st("cp",pl)}if(k=="card"){st("kd",e.d);st("kar",e.a);st("kp",pl)}if(k=="exp"){st("xd",e.d);st("xar",e.a);st("xp",pl)}
  toast("Editing: change what you need, then tap Update entry.");window.scrollTo(0,0)}
-function itemNames(){var m={};s.cash.concat(s.card).forEach(function(e){(e.items||[]).forEach(function(x){if(x.n)m[x.n]=1})});return Object.keys(m)}
+function itemNames(){var m={};s.cash.concat(s.card,s.exp.list).forEach(function(e){(e.items||[]).forEach(function(x){if(x.n)m[x.n]=1})});return Object.keys(m)}
 function menu(){dlg('<b>Settings</b><button class="btn alt" onclick="limDlg()">Monthly spending limits</button><button class="btn alt" onclick="bkDlg()">Backup and restore</button><button class="btn alt" onclick="closeDlg();csv()">Export all data (Excel / CSV)</button><button class="btn alt" onclick="pinDlg()">PIN lock</button><button class="btn" onclick="closeDlg()">Close</button>')}
 function bkDlg(){dlg('<b>Backup and restore</b><label>Your backup: tap to select all and copy, or save as a file</label><textarea id="bk" readonly onclick="this.select()">'+esc(JSON.stringify(s))+'</textarea><button class="btn" onclick="dlFile(\'hishob-backup.txt\',document.getElementById(\'bk\').value,markBk)">Save backup file</button><button class="btn alt" onclick="copyBk()">Copy backup</button><label>Restore: paste a backup here</label><textarea id="rs"></textarea><button class="btn alt" onclick="doRestore()">Restore from pasted backup</button><button class="btn alt" onclick="closeDlg()">Close</button>')}
 function doRestore(){var v;try{v=JSON.parse(val("rs"))}catch(e){toast("That does not look like a Hishob backup.");return}if(!v||!Array.isArray(v.cash)||!Array.isArray(v.card)){toast("That does not look like a Hishob backup.");return}conf("Replace everything in the app with this backup?",function(){s=v;fix();save();draw()})}
